@@ -25,29 +25,29 @@ We discuss the Church-Turing Thesis and the potential definitions of "reasonable
 
 Some of the main computational models we discuss in this chapter include:
 
-* __RAM Machines:__ Turing Machines do not correspond to standard computing architectures that have _Random Access Memory (RAM)_. The mathematical model of RAM machines is much closer to actual computers, but we will see that it is equivalent in power to Turing Machines. We also discuss a programming language variant of RAM machines, which we call NAND-RAM. The equivalence of Turing Machines and RAM machines enables demonstrating the _Turing Equivalence_ of many popular programming languages, including all general-purpose languages used in practice such as C, Python, JavaScript, etc.
+* __RAM Machines:__ Turing machines do not correspond to standard computing architectures that have _Random Access Memory (RAM)_. The mathematical model of RAM machines is much closer to actual computers, but we will see that it is equivalent in power to Turing machines. We also discuss a programming language variant of RAM machines, which we call NAND-RAM. The equivalence of Turing machines and RAM machines enables demonstrating the _Turing Equivalence_ of many popular programming languages, including all general-purpose languages used in practice such as C, Python, JavaScript, etc.
 
-* __Cellular Automata:__ Many natural and artificial systems can be modeled as collections of simple components, each evolving according to simple rules based on its state and the state of its immediate neighbors. One well-known such example is [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life). To prove that cellular automata are equivalent to Turing machines we introduce the tool of _configurations_ of Turing Machines. These have other applications, and in particular are used in  [godelchap](){.ref} to prove _Gödel's Incompleteness Theorem_: a central result in mathematics.
+* __Cellular Automata:__ Many natural and artificial systems can be modeled as collections of simple components, each evolving according to simple rules based on its state and the state of its immediate neighbors. One well-known such example is [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life). To prove that cellular automata are equivalent to Turing machines we introduce the tool of _configurations_ of Turing machines. These have other applications, and in particular are used in  [godelchap](){.ref} to prove _Gödel's Incompleteness Theorem_: a central result in mathematics.
 
 
-* __$\lambda$ calculus:__ The $\lambda$ calculus is a model for expressing computation that originates from the 1930's, though it is closely connected to functional programming languages widely used today. Showing the equivalence of $\lambda$ calculus to Turing Machines involves a beautiful technique to eliminate recursion known as the "Y Combinator".
+* __$\lambda$ calculus:__ The $\lambda$ calculus is a model for expressing computation that originates from the 1930's, though it is closely connected to functional programming languages widely used today. Showing the equivalence of $\lambda$ calculus to Turing machines involves a beautiful technique to eliminate recursion known as the "Y Combinator".
 
 
 ::: {.nonmath}
 In this chapter we study _equivalence between models_. 
 Two computational models are _equivalent_ (also known as _Turing equivalent_) if they can compute the same set of functions.
-For example, we have seen that Turing Machines and NAND-TM programs are equivalent since we can transform every Turing Machine into a NAND-TM
-program that computes the same function, and similarly can transform every NAND-TM program into a Turing Machine that computes the same function.
+For example, we have seen that Turing machines and NAND-TM programs are equivalent since we can transform every Turing machine into a NAND-TM
+program that computes the same function, and similarly can transform every NAND-TM program into a Turing machine that computes the same function.
 
-In this chapter we show this extends far beyond Turing Machines. The techniques we develop allow us to show that all general-purpose programming 
-languages (i.e., Python, C, Java, etc.) are _Turing Complete_, in the sense that they can simulate Turing Machines and hence compute all functions
-that can be computed by a TM. We will also show the other direction- Turing Machines can be used to simulate a program in any of these languages and
+In this chapter we show this extends far beyond Turing machines. The techniques we develop allow us to show that all general-purpose programming 
+languages (i.e., Python, C, Java, etc.) are _Turing Complete_, in the sense that they can simulate Turing machines and hence compute all functions
+that can be computed by a TM. We will also show the other direction- Turing machines can be used to simulate a program in any of these languages and
 hence compute any function computable by them. This means that all these programming language are _Turing equivalent_: they are equivalent in power to
-Turing Machines and to each other.
+Turing machines and to each other.
 This is a powerful principle, which underlies behind the vast reach of Computer Science.
 Moreover, it enables us to "have our cake and eat it too"- since all these models are equivalent, we can choose the model of our convenience for the task at
 hand.
-To achieve this equivalence, we define a new computational model known as _RAM machines_. RAM Machines capture the architecture of modern computers more closely than Turing Machines, but are still computationally equivalent to Turing machines.
+To achieve this equivalence, we define a new computational model known as _RAM machines_. RAM Machines capture the architecture of modern computers more closely than Turing machines, but are still computationally equivalent to Turing machines.
 
 Finally, we will show that Turing equivalence extends far beyond traditional programming languages. We will see that _cellular automata_ which are a mathematical model of extremely simple natural systems is also Turing equivalent, and also see the Turing equivalence of the $\lambda$ calculus - a logical
 system for expressing functions that is the basis for _functional programming languages_ such as Lisp, OCaml, and more. 
@@ -55,11 +55,11 @@ system for expressing functions that is the basis for _functional programming la
 See [turingcompletefig](){.ref} for an overview of the results of this chapter.
 :::
 
-![Some Turing-equivalent models. All of these are equivalent in power to Turing Machines (or equivalently NAND-TM programs) in the sense that they can compute exactly the same class of functions. All of these are models for computing _infinite_ functions that take inputs of unbounded length. In contrast, Boolean circuits / NAND-CIRC programs can only compute  _finite_ functions and hence are not Turing complete.](../figure/turingcomplete.png){#turingcompletefig}
+![Some Turing-equivalent models. All of these are equivalent in power to Turing machines (or equivalently NAND-TM programs) in the sense that they can compute exactly the same class of functions. All of these are models for computing _infinite_ functions that take inputs of unbounded length. In contrast, Boolean circuits / NAND-CIRC programs can only compute  _finite_ functions and hence are not Turing complete.](../figure/turingcomplete.png){#turingcompletefig}
 
 ## RAM machines and NAND-RAM
 
-One of the limitations of Turing Machines (and NAND-TM programs) is that we can only access one location of our arrays/tape at a time.
+One of the limitations of Turing machines (and NAND-TM programs) is that we can only access one location of our arrays/tape at a time.
 If the head is at position $22$ in the tape and we want to access the $957$-th position then it will take us at least 923 steps to get there.
 In contrast, almost every programming language has a formalism for directly accessing memory locations.
 Actual physical computers also provide so called _Random Access Memory (RAM)_ which can be thought of as a large array `Memory`, such that given an index $p$ (i.e., memory address, or a _pointer_), we can read from and write to the $p^{th}$ location of `Memory`.
@@ -94,11 +94,11 @@ Just as the NAND-TM programming language models Turing machines, we can also def
 The NAND-RAM programming language extends NAND-TM by adding the following features:
 
 
-* The variables of NAND-RAM are allowed to be (non negative) _integer valued_ rather than only Boolean as is the case in NAND-TM. That is, a scalar variable `foo` holds a non negative integer in $\N$ (rather than only a bit in $\{0,1\}$), and an array variable `Bar` holds an array of integers. As in the case of RAM machines, we will not allow integers of unbounded size. Concretely, each variable holds a number between $0$ and $T-1$, where $T$ is the number of steps that have been executed by the program so far. (You can ignore this restriction for now:  if we want to hold larger numbers, we can simply execute dummy instructions; it will be useful in later chapters.)
+* The variables of NAND-RAM are allowed to be (non-negative) _integer valued_ rather than only Boolean as is the case in NAND-TM. That is, a scalar variable `foo` holds a non-negative integer in $\N$ (rather than only a bit in $\{0,1\}$), and an array variable `Bar` holds an array of integers. As in the case of RAM machines, we will not allow integers of unbounded size. Concretely, each variable holds a number between $0$ and $T-1$, where $T$ is the number of steps that have been executed by the program so far. (You can ignore this restriction for now:  if we want to hold larger numbers, we can simply execute dummy instructions; it will be useful in later chapters.)
 
 * We allow _indexed access_ to arrays. If `foo` is a scalar and `Bar` is an array, then `Bar[foo]` refers to the location of `Bar` indexed by the value of `foo`. (Note that this means we don't need to have a special index variable `i` anymore.)
 
-* As is often the case in programming languages, we will assume that for Boolean operations such as `NAND`, a zero valued integer is considered as _false_, and a nonzero valued integer is considered as _true_.
+* As is often the case in programming languages, we will assume that for Boolean operations such as `NAND`, a zero valued integer is considered as _false_, and a non-zero valued integer is considered as _true_.
 
 * In addition to `NAND`, NAND-RAM also includes all the basic arithmetic operations of addition, subtraction, multiplication, (integer) division, as well as comparisons (equal, greater than, less than, etc..).
 
@@ -268,12 +268,12 @@ stackpointer -= one
 ```
 
 We implement a function call to $F$ by pushing the arguments for $F$ into the stack.
-The code of $F$ will "pop" the arguments from the stack, perform the computation (which might involve making recursive or non recursive calls) and then "push" its return value into the stack.
+The code of $F$ will "pop" the arguments from the stack, perform the computation (which might involve making recursive or non-recursive calls) and then "push" its return value into the stack.
 Because of the "first in last out" nature of a stack, we do not return control to the calling procedure until all the recursive calls are done.
 
 The fact that we can implement recursion using a non-recursive language is not surprising.
 Indeed, _machine languages_ typically do not have recursion (or function calls in general), and hence a compiler implements function calls using a stack and `GOTO`.
-You can find online tutorials on how recursion is implemented via stack in your favorite programming language, whether it's [Python](http://interactivepython.org/runestone/static/pythonds/Recursion/StackFramesImplementingRecursion.html) , [JavaScript](https://javascript.info/recursion), or [Lisp/Scheme](https://mitpress.mit.edu/sicp/full-text/sicp/book/node110.html).
+You can find online tutorials on how recursion is implemented via stack in your favorite programming language, whether it's [Python](http://interactivepython.org/runestone/static/pythonds/Recursion/StackFramesImplementingRecursion.html) , [JavaScript](https://javascript.info/recursion), or [Lisp/Scheme](https://mitpress.mit.edu/sites/default/files/sicp/full-text/sicp/book/node110.html).
 :::
 
 
@@ -291,7 +291,7 @@ Any of the standard programming language such as `C`, `Java`, `Python`, `Pascal`
 Hence using [RAMTMequivalencethm](){.ref}, we can simulate any program in such a programming language by a NAND-TM program.
 In the other direction, it is a fairly easy programming exercise to write an interpreter for NAND-TM in any of the above programming languages.
 Hence we can also simulate NAND-TM programs (and so by [TM-equiv-thm](){.ref}, Turing machines) using these programming languages.
-This property of being equivalent in power to Turing Machines / NAND-TM is called _Turing Equivalent_ (or sometimes _Turing Complete_).
+This property of being equivalent in power to Turing machines / NAND-TM is called _Turing Equivalent_ (or sometimes _Turing Complete_).
 Thus all programming languages we are familiar with are Turing equivalent.^[Some programming language have fixed (even if extremely large) bounds on the amount of memory they can access, which formally prevent them from being applicable to computing infinite functions and hence simulating Turing machines. We ignore such issues in this discussion and assume access to some storage device without a fixed upper bound on its capacity.]
 
 
@@ -305,13 +305,13 @@ Thus all programming languages we are familiar with are Turing equivalent.^[Some
 
 ### The "Best of both worlds" paradigm
 
-The equivalence between Turing Machines and RAM machines allows us to choose the most convenient language for the task at hand:
+The equivalence between Turing machines and RAM machines allows us to choose the most convenient language for the task at hand:
 
 * When we want to _prove a theorem_ about all programs/algorithms, we can use Turing machines (or NAND-TM) since they are simpler and easier to analyze. In particular, if we want to show that a certain function _can not_ be computed, then we will use Turing machines.
 
 * When we want to show that a function _can be computed_ we can use RAM machines or NAND-RAM, because they are easier to program in and correspond more closely to high level programming languages we are used to. In fact,  we will often describe NAND-RAM programs in an informal manner, trusting that the reader can fill in the details and translate the high level description to the precise program. (This is just like the way people typically use informal or "pseudocode" descriptions of algorithms, trusting that their audience will know to translate these descriptions to code if needed.)
 
-Our usage of Turing Machines / NAND-TM and RAM Machines / NAND-RAM is very similar to the way people use in practice high and low level programming languages.
+Our usage of Turing machines / NAND-TM and RAM Machines / NAND-RAM is very similar to the way people use in practice high and low level programming languages.
 When one wants to produce a device that executes programs, it is convenient to do so for very simple and "low level" programming language. When one wants to describe an algorithm, it is convenient to use as high level a formalism as possible.
 
 ![By having the two equivalent languages NAND-TM and NAND-RAM, we can "have our cake and eat it too", using NAND-TM when we want to prove that programs _can't_ do something, and using NAND-RAM or other high level languages when we want to prove that programs _can_ do something.](../figure/have_your_cake_and_eat_it_too-img-intro.png){#cakefig .margin  }
@@ -380,7 +380,7 @@ Hence, in cases where the precise representation doesn't make a difference, we w
 
 __Defining "Algorithms".__
 Up until now we have used the term "algorithm" informally.
-However, Turing Machines and the range of equivalent models yield a way to precisely and formally define algorithms.
+However, Turing machines and the range of equivalent models yield a way to precisely and formally define algorithms.
 Hence whenever we refer to an _algorithm_ in this book, we will mean that it is an instance of one of the Turing equivalent models, such as Turing machines, NAND-TM, RAM machines, etc.
 Because of the equivalence of all these models, in many contexts, it will not matter which of these we use.
 
@@ -467,12 +467,12 @@ We will only be interested in studying cellular automata that are initialized in
 
 
 We can write a program (for example using NAND-RAM) that simulates the evolution of any cellular automaton from an initial finite configuration by simply storing the values of the cells with state not equal to $\varnothing$ and repeatedly applying the rule $r$.
-Hence cellular automata can be simulated by Turing Machines.
+Hence cellular automata can be simulated by Turing machines.
 What is more surprising that the other direction holds as well.
 For example, as simple as its rules seem, we can simulate a Turing machine using the game of life (see [golfig](){.ref}).
 
 
-![A Game-of-Life configuration simulating a Turing Machine. Figure by [Paul Rendell](http://rendell-attic.org/gol/tm.htm).](../figure/turing_gol.jpg){#golfig .margin  }
+![A Game-of-Life configuration simulating a Turing machine. Figure by [Paul Rendell](http://rendell-attic.org/gol/tm.htm).](../figure/turing_gol.jpg){#golfig .margin  }
 
 
 
@@ -485,7 +485,7 @@ For every Turing machine  $M$,  there is a one dimensional cellular automaton th
 
 To make the notion of "simulating a Turing machine"   more precise we will need to define _configurations_ of Turing machines.
 We will do so in [turingmachinesconfigsec](){.ref} below, but at a high level a _configuration_ of a Turing machine is a string that encodes its full state at  a given step in its computation.
-That is, the contents of all (non empty) cells of its tape, its current state, as well as the head position.
+That is, the contents of all (non-empty) cells of its tape, its current state, as well as the head position.
 
 The key idea in the proof of [onedimcathm](){.ref} is that at every point in the computation of a Turing machine $M$, the only cell in $M$'s tape that can change is the one where the head is located, and the value this cell changes to is a function of its current state and the finite state of $M$.
 This observation allows us to encode the configuration of a Turing machine $M$ as a finite configuration of a cellular automaton $r$, and ensure that a one-step evolution of this encoded configuration under the rules of $r$ corresponds to one step in the execution of the Turing machine $M$.
@@ -550,7 +550,7 @@ Completing the full proof is not hard, but doing it is a great way to ensure tha
 __Completing the proof of  [onedimcathm](){.ref}.__ We can now restate [onedimcathm](){.ref} more formally, and complete its proof:
 
 ::: {.theorem title="One dimensional automata are Turing complete (formal statement)" #onedimcathmformal}
-For every Turing Machine $M$, if we denote by $\overline{\Sigma}$ the alphabet of its configuration strings, then there is a one-dimensional cellular automaton $r$ over the alphabet $\overline{\Sigma}^*$  such that
+For every Turing machine $M$, if we denote by $\overline{\Sigma}$ the alphabet of its configuration strings, then there is a one-dimensional cellular automaton $r$ over the alphabet $\overline{\Sigma}^*$  such that
 $$\left( NEXT_M(\alpha) \right)  = NEXT_r \left( \alpha \right)$$
 for every configuration $\alpha \in \overline{\Sigma}^*$ of $M$ (again using the convention that we consider $\alpha_i=\varnothing$ if $i$ is "out of bounds).
 :::
@@ -586,8 +586,8 @@ We can use the same approach as [configtmdef](){.ref} to define configurations o
 ## Lambda calculus and functional programming languages { #lambdacalculussec }
 
 The [λ calculus](https://goo.gl/B9HwT8) is another way to define computable functions.
-It was proposed by Alonzo Church in the 1930's around the same time as Alan Turing's proposal of the Turing Machine.
-Interestingly, while Turing Machines are not used for practical computation,  the λ calculus has inspired functional programming languages such as LISP, ML and Haskell, and indirectly the development of many other programming languages as well.
+It was proposed by Alonzo Church in the 1930's around the same time as Alan Turing's proposal of the Turing machine.
+Interestingly, while Turing machines are not used for practical computation,  the λ calculus has inspired functional programming languages such as LISP, ML and Haskell, and indirectly the development of many other programming languages as well.
 In this section we will present the λ calculus and show that its power is equivalent to NAND-TM programs (and hence also to Turing machines).
 Our [Github repository](https://github.com/boazbk/tcscode) contains a Jupyter notebook with a Python implementation of the λ calculus that you can experiment with to get a better feel for this topic.
 
@@ -615,7 +615,7 @@ Clearly, the name of the argument to a function doesn't matter, and so $\lambda 
 
 
 
-_Dropping parenthesis._ To reduce notational clutter, when writing $\lambda$ calculus expressions we often drop the parentheses for function evaluation. Hence instead of writing $f(x)$ for the result of applying the function $f$ to the input $x$, we can also write this as simply $f\; x$.
+_Dropping parentheses._ To reduce notational clutter, when writing $\lambda$ calculus expressions we often drop the parentheses for function evaluation. Hence instead of writing $f(x)$ for the result of applying the function $f$ to the input $x$, we can also write this as simply $f\; x$.
 Therefore we can write  $(\lambda x.x\times x) 7=49$. In this chapter, we will use both the $f(x)$ and $f\; x$ notations for function application.
 Function evaluations are associative and bind from left to right, and hence $f\;g\;h$ is the same as $(f g) h$.
 
@@ -714,10 +714,10 @@ Consider how we define an _arithmetic expression_: it is an expression that is e
 _Free and bound variables._ Variables in a λ expression can either be _free_ or _bound_ to a $\lambda$ operator (in the sense of [boundvarsec](){.ref}). In a single-variable λ expression $var$, the variable $var$ is free. The set of free and bound variables in an application expression $e = (e' \; e'')$ is the same as that of the underlying expressions $e'$ and $e''$. In an abstraction expression $e = \lambda var.(e')$, all free occurences of $var$ in $e'$ are bound to the $\lambda$ operator of $e$.
 If you find the notion of free and bound variables confusing, you can avoid all these issues by using unique identifiers for all variables.
 
-_Precedence and parenthesis._ We will use the following rules to allow us to drop some parenthesis.
+_Precedence and parentheses._ We will use the following rules to allow us to drop some parentheses.
 Function application associates from left to right, and so $fgh$ is the same as $(fg)h$.
 Function application has a higher precedence than the λ operator, and so $\lambda x.fgx$ is the same as $\lambda x.((fg)x)$.
-This is similar to how we use the precedence rules in arithmetic operations to allow us to use fewer parenthesis and so write the expression $(7 \times 3) + 2$ as $7\times 3 + 2$.
+This is similar to how we use the precedence rules in arithmetic operations to allow us to use fewer parentheses and so write the expression $(7 \times 3) + 2$ as $7\times 3 + 2$.
 As mentioned in [curryingsec](){.ref}, we also use the shorthand $\lambda x,y.e$ for $\lambda x.(\lambda y.e)$ and the shorthand $f(x,y)$ for $(f\; x)\; y$. This plays nicely with the "Currying" transformation of simulating multi-input functions using λ expressions.
 
 
@@ -744,9 +744,9 @@ $$
 There are two natural conventions for this:
 
 
-* _Call by name_ (aka _"lazy evaluation"_): We evaluate [lambdaexpeq](){.eqref} by first plugging in the righthand expression $(\lambda y.g z)$ as input to the lefthand side function, obtaining $f[x \rightarrow (\lambda y.g z)]$ and then continue from there.
+* _Call by name_ (aka _"lazy evaluation"_): We evaluate [lambdaexpeq](){.eqref} by first plugging in the right-hand expression $(\lambda y.g z)$ as input to the left-hand side function, obtaining $f[x \rightarrow (\lambda y.g z)]$ and then continue from there.
 
-* _Call by value_ (aka _"eager evaluation"_): We evaluate [lambdaexpeq](){.eqref} by first evaluating the righthand side and obtaining $h=g[y \rightarrow z]$, and then plugging this into the lefthandside to obtain $f[x \rightarrow h]$.
+* _Call by value_ (aka _"eager evaluation"_): We evaluate [lambdaexpeq](){.eqref} by first evaluating the right-hand side and obtaining $h=g[y \rightarrow z]$, and then plugging this into the left-hand side to obtain $f[x \rightarrow h]$.
 
 Because the λ calculus has only _pure_ functions, that do not have "side effects", in many cases the order does not matter.
 In fact, it can be shown that if we obtain a definite irreducible expression (for example, a number) in both strategies, then it will be the same one.
@@ -795,7 +795,7 @@ $$
 \lambda x.xx \; \lambda x.xx \label{lambdainfloopeq}
 $$
 
-If we try to simplify [lambdainfloopeq](){.eqref} by invoking the lefthand function on the righthand one, then we get another copy of [lambdainfloopeq](){.eqref} and hence this never ends.
+If we try to simplify [lambdainfloopeq](){.eqref} by invoking the left-hand function on the right-hand one, then we get another copy of [lambdainfloopeq](){.eqref} and hence this never ends.
 There are examples where the order of evaluation can matter for whether or not an expression can be simplified, see [evalorderlambdaex](){.ref}.
 
 
@@ -811,7 +811,7 @@ There are examples where the order of evaluation can matter for whether or not a
 We now discuss the λ calculus as a computational model.
 We will start by describing an "enhanced" version of the λ calculus that contains some "superfluous features" but is easier to wrap your head around.
 We will first show how the enhanced λ calculus is equivalent to Turing machines in computational power.
-Then we will show how all the features of "enhanced λ calculus" can be implemented as "syntactic sugar" on top of the  "pure" (i.e., non enhanced) λ calculus.
+Then we will show how all the features of "enhanced λ calculus" can be implemented as "syntactic sugar" on top of the  "pure" (i.e., non-enhanced) λ calculus.
 Hence the pure λ calculus is equivalent in power to Turing machines (and hence also to RAM machines and all other Turing-equivalent models).
 
 The _enhanced λ calculus_ includes the following set of objects and operations:
@@ -1093,7 +1093,7 @@ print(xor([0,1,1,0,0,1]))
 
 Now, how could we eliminate this recursive call?
 The main idea is that since functions can take other functions as input, it is perfectly legal in Python (and the λ calculus of course) to give a function _itself_ as input.
-So, our idea is to try to come up with a _non recursive_ function `tempxor` that takes _two inputs_: a function and a list, and such that `tempxor(tempxor,L)` will output the XOR of `L`!
+So, our idea is to try to come up with a _non-recursive_ function `tempxor` that takes _two inputs_: a function and a list, and such that `tempxor(tempxor,L)` will output the XOR of `L`!
 
 ::: { .pause }
 At this point you might want to stop and try to implement this on your own in Python or any other programming language of your choice (as long as it allows functions as inputs).
@@ -1137,7 +1137,7 @@ and so we can define `xor(L)` as simply `return tempxor(tempxor,L)`.
 
 
 The approach above is not specific to XOR.
-Given a recursive function `f` that takes an input `x`, we can obtain a non recursive version as follows:
+Given a recursive function `f` that takes an input `x`, we can obtain a non-recursive version as follows:
 
 1. Create the function `myf` that takes a pair of inputs `me` and `x`, and replaces recursive calls to `f` with calls to `me`.
 
@@ -1235,7 +1235,7 @@ We can summarize the models we have seen in the following table:
 
 | **Computational problems**                                          | **Type of model**                                           | **Examples**                                                             |
 |---------------------------------------------------------------------|-------------------------------------------------------------|--------------------------------------------------------------------------|
-| Finite functions $f:\{0,1\}^n \rightarrow \{0,1\}^m$                | Non uniform computation (algorithm depends on input length) | Boolean circuits, NAND circuits, straight-line programs (e.g., NAND-CIRC) |
+| Finite functions $f:\{0,1\}^n \rightarrow \{0,1\}^m$                | Non-uniform computation (algorithm depends on input length) | Boolean circuits, NAND circuits, straight-line programs (e.g., NAND-CIRC) |
 | Functions with unbounded inputs $F:\{0,1\}^* \rightarrow \{0,1\}^*$ | Sequential access to memory                                 | Turing machines, NAND-TM programs                                        |
 | --                                                                  | Indexed access / RAM                                        | RAM machines, NAND-RAM, modern programming languages                     |
 | --                                                                  | Other                                                       | Lambda calculus, cellular automata                                       |
@@ -1244,7 +1244,7 @@ Table: Different models for computing finite functions and functions with arbitr
 
 
 Later on in [spacechap](){.ref} we will study _memory bounded_ computation.
-It turns out that NAND-TM programs with a constant amount of memory are equivalent to the model of _finite automata_ (the adjectives "deterministic" or "nondeterministic" are sometimes added as well, this model is also known as _finite state machines_) which in turn captures the notion of _regular languages_ (those that can be described by [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)), which is a concept we will see in [restrictedchap](){.ref}.
+It turns out that NAND-TM programs with a constant amount of memory are equivalent to the model of _finite automata_ (the adjectives "deterministic" or "non-deterministic" are sometimes added as well, this model is also known as _finite state machines_) which in turn captures the notion of _regular languages_ (those that can be described by [regular expressions](https://en.wikipedia.org/wiki/Regular_expression)), which is a concept we will see in [restrictedchap](){.ref}.
 
 
 
@@ -1268,7 +1268,7 @@ The output is $v_i$ for the smallest $i$ such that $k_i=k$, if such $i$ exists, 
 
 2. Let $UPDATE(L,k,v)$ be the function whose input is a list $L$ of pairs, and whose output is the list $L'$ obtained by prepending the pair $(k,v)$ to the beginning of $L$. Prove that $UPDATE$ is computable by a Turing machine.
 
-3. Suppose we encode the configuration of a NAND-RAM program by a list $L$ of key/value pairs where the key is either the name of a scalar variable `foo` or of the form `Bar[<num>]` for some number `<num>` and it contains all the nonzero values of variables. Let $NEXT(L)$ be the function that maps a configuration of a NAND-RAM program at one step to the configuration in the next step. Prove that $NEXT$ is computable by a Turing machine (you don't have to implement each one of the arithmetic operations: it is enough to implement addition and multiplication).
+3. Suppose we encode the configuration of a NAND-RAM program by a list $L$ of key/value pairs where the key is either the name of a scalar variable `foo` or of the form `Bar[<num>]` for some number `<num>` and it contains all the non-zero values of variables. Let $NEXT(L)$ be the function that maps a configuration of a NAND-RAM program at one step to the configuration in the next step. Prove that $NEXT$ is computable by a Turing machine (you don't have to implement each one of the arithmetic operations: it is enough to implement addition and multiplication).
 
 4. Prove that for every $F:\{0,1\}^* \rightarrow \{0,1\}^*$ that is computable by a NAND-RAM program,  $F$ is computable by a Turing machine.
 :::
@@ -1348,7 +1348,7 @@ Prove that $ALT$ is a $\lambda$ expression that computes the _at least two_ func
 
 
 ::: {.exercise title="Locality of next-step function" #stringsprogramex}
-This question will help you get a better sense of the notion of _locality of the next step function_ of Turing Machines. This locality plays an important role in results such as the Turing completeness of $\lambda$ calculus and one dimensional cellular automata, as well as results such as  Godel's Incompleteness Theorem and the Cook Levin theorem that we will see later in this course.
+This question will help you get a better sense of the notion of _locality of the next step function_ of Turing machines. This locality plays an important role in results such as the Turing completeness of $\lambda$ calculus and one dimensional cellular automata, as well as results such as  Godel's Incompleteness Theorem and the Cook Levin theorem that we will see later in this course.
 Define `STRINGS` to be the a programming language that has the following semantics:
 
 * A `STRINGS` program $Q$ has a single string variable `str` that is both the input and the output of $Q$. The program has no loops and no other variables, but rather consists of a sequence of conditional search and replace operations that modify `str`.
@@ -1379,7 +1379,7 @@ if search('110011') {
 ```
 
 
-Prove that for every Turing Machine program $M$, there exists a `STRINGS` program $Q$ that computes the $NEXT_M$ function that maps every string encoding a valid _configuration_ of $M$ to the string encoding the  configuration of the next step of $M$'s computation. (We don't care what the function will do on strings that do not encode a valid configuration.) You don't have to write the `STRINGS` program fully, but you do need to give a convincing argument that such a program exists.
+Prove that for every Turing machine program $M$, there exists a `STRINGS` program $Q$ that computes the $NEXT_M$ function that maps every string encoding a valid _configuration_ of $M$ to the string encoding the  configuration of the next step of $M$'s computation. (We don't care what the function will do on strings that do not encode a valid configuration.) You don't have to write the `STRINGS` program fully, but you do need to give a convincing argument that such a program exists.
 :::
 
 

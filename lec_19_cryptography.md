@@ -47,6 +47,17 @@ an attacker can generate as many ciphertexts as they wish.
 The key to this success has been a clearer understanding of both how to _define_ security for cryptographic tools and how to relate this security to _concrete computational problems_.
 Cryptography is a vast and continuously changing topic, but we will touch on some of these issues in this chapter.
 
+
+::: {.nonmath}
+Cryptography cannot be covered in a single chapter, and so this chapter merely gives a "taste" of crypto, focusing on the aspects most related to computational complexity.
+For a more extensive treatment, see my [lecture notes](https://intensecrypto.org/) from which this chapter is adapted.
+We will discuss some "classical cryptosystems" and show how we can _mathematically define_ security of encryption, and use the _one-time pad_ to achieve an encryption that provably satisfies this definition.
+We will then see the fundamental limitation of this definition, and how to bypass it we need to relax security by only restricting attention to attackers that have _bounded computational resources_.
+This notion of _computational security_ is inherently tied to computational complexity and the $\mathbf{P}$ vs $\mathbf{NP}$ question.
+We will also give a small taste of some of the "paradoxical" cryptographic constructions that go way beyond encryption, including public-key cryptography, fully-homomorphic encryption, and multi-party secure computation.
+:::
+
+
 ## Classical cryptosystems
 
 A great many cryptosystems have been devised and broken throughout the ages.
@@ -380,7 +391,7 @@ We will show that $(E,D)$ is not perfectly secret by providing two plaintexts $x
 
 
 We choose $x_0 = 0^L$.
-Let $S_0 \subseteq \{0,1\}^*$ be the set of all ciphertexts that have nonzero probability of being output in $Y_{x_0}$. That is, $S_0=\{ y \;|\; \exists_{k\in \{0,1\}^n} y=E_k(x_0) \}$.
+Let $S_0 \subseteq \{0,1\}^*$ be the set of all ciphertexts that have non-zero probability of being output in $Y_{x_0}$. That is, $S_0=\{ y \;|\; \exists_{k\in \{0,1\}^n} y=E_k(x_0) \}$.
 Since there are only $2^n$ keys, we know that $|S_0| \leq 2^n$.
 
 
@@ -423,7 +434,7 @@ $$
 
 > ### { .pause }
 [compsecdef](){.ref} requires a second or third read and some practice to truly understand.
-One excellent exercise to make sure you follow it is to see that if we allow $P$ to be an _arbitrary_ function mapping $\{0,1\}^{m(n)}$ to $\{0,1\}$, and we replace the condition in [eqindist](){.eqref} that the lefthand side is smaller than $\tfrac{1}{p(n)}$ with the condition that it is equal to $0$ then we get the perfect secrecy condition of [perfectsecrecy](){.ref}.
+One excellent exercise to make sure you follow it is to see that if we allow $P$ to be an _arbitrary_ function mapping $\{0,1\}^{m(n)}$ to $\{0,1\}$, and we replace the condition in [eqindist](){.eqref} that the left-hand side is smaller than $\tfrac{1}{p(n)}$ with the condition that it is equal to $0$ then we get the perfect secrecy condition of [perfectsecrecy](){.ref}.
 Indeed if the distributions $E_k(x_0)$  and $E_k(x_1)$ are identical then applying any function $P$ to them we get the same expectation.
 On the other hand, if the two distributions above give a different probability for some element $y^*\in \{0,1\}^{m(n)}$, then the function $P(y)$ that outputs $1$ iff $y=y^*$ will have a different expectation under the former distribution than under the latter.
 
@@ -522,7 +533,7 @@ $$
 \left| \E_{k \sim \{0,1\}^n}[ Q(G(k) \oplus x)] - \E_{r \sim \{0,1\}^L} [ Q(r \oplus x)] \right| + \left|  \E_{r \sim \{0,1\}^L} [ Q(r \oplus x')]  -  \E_{k \sim \{0,1\}^n}[Q(G(k) \oplus x')] \right| > \tfrac{1}{p(L)} \;. \label{eqprgsefour}
 $$
 
-In particular, either the first term or the second term of the lefthand-side of [eqprgsefour](){.eqref} must be at least $\tfrac{1}{2p(L)}$.
+In particular, either the first term or the second term of the left-hand side of [eqprgsefour](){.eqref} must be at least $\tfrac{1}{2p(L)}$.
 Let us assume the first case holds (the second case is analyzed in exactly the same way).
 Then we get that
 $$
@@ -820,7 +831,7 @@ He wrote _"I hope my handwriting, etc. do not give the impression I am just a cr
 John Nash made seminal contributions in mathematics and game theory, and was awarded both the Abel Prize in mathematics and the Nobel Memorial Prize in Economic Sciences.
 However, he has struggled with mental illness throughout his life. His biography, [A Beautiful Mind](https://en.wikipedia.org/wiki/A_Beautiful_Mind_(book)) was made into a popular movie.
 It is natural to compare Nash's 1955 letter to the NSA to Gödel's letter to von Neumann we mentioned before.
-From the theoretical computer science point of view, the crucial difference is that while Nash informally talks about exponential vs polynomial computation time, he does not mention the word "Turing Machine" or other models of computation, and it is not clear if he is aware or not that his conjecture can be made mathematically precise (assuming a formalization of "sufficiently complex types of enciphering").
+From the theoretical computer science point of view, the crucial difference is that while Nash informally talks about exponential vs polynomial computation time, he does not mention the word "Turing machine" or other models of computation, and it is not clear if he is aware or not that his conjecture can be made mathematically precise (assuming a formalization of "sufficiently complex types of enciphering").
 
 The definition of computational secrecy we use is the notion of _computational indistinguishability_ (known to be equivalent to _semantic security_) that was given by Goldwasser and Micali in 1982.
 

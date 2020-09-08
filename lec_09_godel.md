@@ -30,6 +30,14 @@ In this chapter we will see an example of a natural and seemingly "computation f
 As a corollary, we will see one of the most striking results of 20th century mathematics: _Gödel's Incompleteness Theorem_, which showed that there are some mathematical statements (in fact, in number theory) that are _inherently unprovable_.
 We will actually start with the latter result, and then show the former.
 
+::: {.nonmath}
+The marquee result of this chapter is Gödel's Incompleteness Theorem, which states that for every proof system, there are some statements about arithmetic that are true but  _unprovable_ in this system.
+But more than that we will see a deep connection between _uncomputability_ and _unprovability_.
+For example, the uncomputability of the Halting problem immediately gives rise to the existence of unprovable statements about Turing machines.
+To even state Gödel's Incompleteness Theorem we will need to formally define the notion of a "proof system".
+We give a very general definition, that encompasses all types of "axioms + inference rules" systems using in logic and math.
+We will then build up the machinery to encode computation using arithmetic that will enable us to prove Gödel's Theorem.
+:::
 
 
 ![Outline of the results of this chapter. One version of Gödel's Incompleteness Theorem is an immediate consequence of the uncomputability of the Halting problem. To obtain the theorem as originally stated (for statements about the integers) we first prove that the $QMS$ problem of determining truth of quantified statements involving both integers and strings is uncomputable. We do so using the notion of _Turing Machine configurations_ but there are alternative approaches to do so as well, see [alternativeproofs](){.ref}.](../figure/godelstructure.png){#godelstructurefig }
@@ -141,7 +149,7 @@ Our algorithm $A$ will will work as follows:
 
 
 ``` { .algorithm title="Halting from proofs" #haltingfromproog}
-INPUT: Turing Machine $M$
+INPUT: Turing machine $M$
 OUTPUT:  $1$  $M$ -if halts on the input $0$;  $0$ otherwise.
 
 for{$n=1,2,3,\ldots$}
@@ -173,7 +181,7 @@ x^* \text{ is true} \Leftrightarrow \text{$x^*$ does not have a proof in $V$} \l
 $$
 
 One can see that if $x^*$ is true, then it does not have a proof, but it is false then (assuming the proof system is sound) then it cannot have a proof, and hence $x^*$ must be both true and unprovable.
-One might wonder how is it possible to come up with an $x^*$ that satisfies a condition such as [godeleq](){.eqref} where the same string $x^*$ appears on both the righthand side and the lefthand side of the equation.
+One might wonder how is it possible to come up with an $x^*$ that satisfies a condition such as [godeleq](){.eqref} where the same string $x^*$ appears on both the right-hand side and the left-hand side of the equation.
 The idea is that the proof of [godethmtakeone](){.ref} yields a way to transform every statement $x$ into a statement $F(x)$ that is true if and only if $x$ does not have a proof in $V$.
 Thus $x^*$ needs to be a _fixed point_ of $F$: a sentence such that $x^* = F(x^*)$.
 It turns out that [we can always find](https://en.wikipedia.org/wiki/Kleene%27s_recursion_theorem) such a fixed point of $F$.
@@ -382,10 +390,10 @@ Since a program $P$ halts on input  $x$ if and only if there is a sequence of co
 
 ::: {.proof data-ref="QMS-thm"}
 The proof is obtained by a reduction from the Halting problem.
-Specifically, we will use the notion of a _configuration_ of a Turing Machines ([configtmdef](){.ref}) that we have seen in the context of proving that one dimensional cellular automata are Turing complete.
+Specifically, we will use the notion of a _configuration_ of a Turing machines ([configtmdef](){.ref}) that we have seen in the context of proving that one dimensional cellular automata are Turing complete.
 We need the following facts about configurations:
 
-* For every Turing Machine $M$, there is a finite alphabet $\Sigma$, and a _configuration_ of $M$ is a string $\alpha \in \Sigma^*$.
+* For every Turing machine $M$, there is a finite alphabet $\Sigma$, and a _configuration_ of $M$ is a string $\alpha \in \Sigma^*$.
 
 
 * A configuration $\alpha$ encodes all the state of the program at a particular iteration, including the array, scalar, and index variables.
@@ -401,7 +409,7 @@ We can encode such a sequence $H$ of configuration as a binary string.
 For concreteness,  we let $\ell = \lceil \log (|\Sigma|+1) \rceil$ and encode each symbol $\sigma$ in $\Sigma \cup \{ ";" \}$ by a string in $\{0,1\}^\ell$.
 We use "$;$" as a  "separator" symbol, and so encode $H = (\alpha^0,\alpha^1,\ldots,\alpha^{T-1})$ as the concatenation of the encodings of each configuration, using "$;$" to separate the encoding of $\alpha^i$ and $\alpha^{i+1}$
 for every $i\in [T]$.
-In particular for every Turing Machine $M$, 
+In particular for every Turing machine $M$, 
 $M$ halts on the input $0$ if and only if the following  statement $\varphi_M$ is true
 
 $$
@@ -420,7 +428,7 @@ Indeed, $\varphi_M$ can be encoded as a mixed-integer statement for the followin
 3. Finally, if $\alpha^0$ is a binary string encoding the initial configuration of $M$ on input $0$, checking that the first $|\alpha^0|$ bits of $H$ equal $\alpha_0$ can be expressed using $AND$,$OR$, and $NOT$'s.
 Similarly checking that the last configuration encoded by $H$ corresponds to a state in which $M$ will halt can also be expressed as a quantified statement.
 
-Together the above yields a computable procedure that maps every Turing Machine $M$  into a quantified mixed statement $\varphi_M$ such that $HALTONZERO(M)=1$ if and only if $QMS(\varphi_M)=1$.
+Together the above yields a computable procedure that maps every Turing machine $M$  into a quantified mixed statement $\varphi_M$ such that $HALTONZERO(M)=1$ if and only if $QMS(\varphi_M)=1$.
 This reduces computing $HALTONZERO$ to computing $QMS$, and hence the
 uncomputability of $HALTONZERO$ implies the uncomputability of $QMS$.
 :::
@@ -505,7 +513,7 @@ Let $FINDPROOF:\{0,1\}^* \rightarrow \{0,1\}$ be the following function. On inpu
 
 1. Prove that $FINDPROOF$ is uncomputable.
 
-2. Prove that there exists a Turing machine $V$ such that $V$ _halts on every input  $x,v$_ but the function $FINDPROOF_V$ defined as $FINDPROOF_V(x) = FINDPROOF(V,x)$ is uncomputable. See footnote for hint.^[_Hint:_ think of $x$ as saying "Turing Machine $M$ halts on input $u$" and $w$ being a proof that is the number of steps that it will take for this to happen. Can you find an always-halting $V$ that will verify such statements?]
+2. Prove that there exists a Turing machine $V$ such that $V$ _halts on every input  $x,v$_ but the function $FINDPROOF_V$ defined as $FINDPROOF_V(x) = FINDPROOF(V,x)$ is uncomputable. See footnote for hint.^[_Hint:_ think of $x$ as saying "Turing machine $M$ halts on input $u$" and $w$ being a proof that is the number of steps that it will take for this to happen. Can you find an always-halting $V$ that will verify such statements?]
 :::
 
 
